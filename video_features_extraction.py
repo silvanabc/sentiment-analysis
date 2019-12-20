@@ -131,7 +131,7 @@ def model_visual_features(rgb_array):
 
 
 def get_video_features(path):
-    return model_visual_features(get_videos_array(path))
+    return get_visual_features_from_array(get_videos_array(path))
 
 def get_visual_features_from_array(video_array):
     max_utterance = video_array.shape[1]
@@ -143,18 +143,18 @@ def get_visual_features_from_array(video_array):
         np.save("v_features_{}".format(count), visual_features)
         result_array = np.append(result_array, [visual_features], axis=0)
 
-    return visual_features
+    return result_array
 
 
 
 
 path = "../MOSI_Dataset/Test_Segmented/"
-# a = get_video_features(path)
-# np.save("test_ut", a)
-a = np.load("test_ut.npy")
-b = get_visual_features_from_array(a)
-print(b)
-np.save("test_model_pred", b)
+a = get_video_features(path)
+np.save("video_features", a)
+# a = np.load("test_ut.npy")
+# b = get_visual_features_from_array(a)
+# print(b)
+# np.save("test_model_pred", b)
 
 
 # a = get_frames_array("/Users/silvana/Projetos/SemesterProject/MOSI_Dataset/Segmented/_dI--eQ6qVU_10.mp4")
