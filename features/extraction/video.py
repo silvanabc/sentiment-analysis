@@ -93,7 +93,7 @@ def get_video_utterances_array(videos_path, video_name,
 
 # get the numpy array of the video
 # with padded frames and padded utterances
-def get_videos_array(path, sep='_', start =1 ):
+def get_videos_array(path, sep='_', start =1):
     video_names, max_utterance = get_video_info(path,sep)
 
     print("Video names: ", video_names)
@@ -143,38 +143,5 @@ def get_visual_features_from_array(video_array):
     return result_array
 
 
-def get_video_features(path):
-    return get_visual_features_from_array(get_videos_array(path))
-
-
-
-
-#path = "../MOSI_Dataset/Test_Segmented/"
-#a = get_video_features(path)
-#np.save("video_features", a)
-# a = np.load("test_ut.npy")
-# b = get_visual_features_from_array(a)
-# print(b)
-# np.save("test_model_pred", b)
-
-
-# a = get_frames_array("/Users/silvana/Projetos/SemesterProject/MOSI_Dataset/Segmented/_dI--eQ6qVU_10.mp4")
-# print(a)
-
-#
-# if __name__ == "__main__":
-#     argv = sys.argv[1:]
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument("--path", type=str, nargs='?', const=True)
-#     parser.add_argument("--output-path", type=str, nargs='?', const=True, default='./output/')
-#     parser.add_argument("--output-name", type=str, nargs='?', const=True, default='video-features')
-#     parser.add_argument("--start_segment", type=int, nargs='?', const=True, default=1)
-#     args, _ = parser.parse_known_args(argv)
-#
-#     if not args.path:
-#         raise argparse.ArgumentError('Expected value for path')
-
-
-
-
-
+def get_video_features(path, sep='_', start=1, filenames=None):
+    return get_visual_features_from_array(get_videos_array(path, sep, start))
