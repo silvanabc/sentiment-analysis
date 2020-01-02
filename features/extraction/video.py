@@ -4,7 +4,6 @@
 # # Video Features Extraction
 # ---
 
-print("starting video features extraction")
 from moviepy.editor import VideoFileClip
 import numpy as np
 import tensorflow as tf
@@ -16,7 +15,6 @@ from collections import Counter
 import sys
 sys.path.insert(1, '../kinetics-i3d/') #insert the kinects-i3d project to the path
 import i3d
-print("files imported")
 
 # Global Variables
 _NUM_CLASSES = 400
@@ -93,7 +91,7 @@ def get_video_utterances_array(videos_path, video_name,
 
 # get the numpy array of the video
 # with padded frames and padded utterances
-def get_videos_array(path, sep='_', start =1):
+def get_videos_array(path, sep='_', start =1, filenames=None):
     video_names, max_utterance = get_video_info(path,sep)
 
     print("Video names: ", video_names)
@@ -101,9 +99,10 @@ def get_videos_array(path, sep='_', start =1):
     result_array = np.empty((0, max_utterance, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
 
     for v in video_names:
-        video_array = get_video_utterances_array(path,v,max_utterance,sep, start)
+        if(not filenames or v in filenames):
+            video_array = get_video_utterances_array(path,v,max_utterance,sep, start)
 
-        result_array = np.append(result_array, [video_array], axis=0)
+            result_array = np.append(result_array, [video_array], axis=0)
 
     return result_array
 
@@ -144,4 +143,4 @@ def get_visual_features_from_array(video_array):
 
 
 def get_video_features(path, sep='_', start=1, filenames=None):
-    return get_visual_features_from_array(get_videos_array(path, sep, start))
+    return get_visual_features_from_array(get_videos_array(path, sep, start, filenames))
