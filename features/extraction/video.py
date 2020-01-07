@@ -168,11 +168,11 @@ def get_video_features(path, sep='_', start=1, filenames=None):
 
                 utterance_result_array = np.append(utterance_result_array, visual_features[0], axis=0)
 
-                print("shape utterance_result_array", utterance_result_array.shape)
+                # print("shape utterance_result_array", utterance_result_array.shape)
 
-                count += 1
-                if (count > 10):
-                    break
+                # count += 1
+                # if (count > max_utterance):
+                #     break
 
             result_array = np.append(result_array, [utterance_result_array], axis=0)
             print("\nshape result_array", result_array.shape)
