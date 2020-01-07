@@ -166,7 +166,8 @@ def get_video_features(path, sep='_', start=1, filenames=None):
                 # shape: (_FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
 
                 # including two more dimensions:
-                video = np.expand_dims(np.expand_dims(u, axis=0), axis=0)
+                # video = np.expand_dims(np.expand_dims(u, axis=0), axis=0)
+                video = np.expand_dims(u, axis=0)
 
                 # shape: (1, 1, _NUM_CLASSES)
                 visual_features = get_visual_features_from_array(video)
