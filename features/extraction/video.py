@@ -7,7 +7,6 @@
 from moviepy.editor import VideoFileClip
 import numpy as np
 import tensorflow as tf
-import argparse
 import os
 from collections import Counter
 
@@ -133,14 +132,38 @@ def get_visual_features_from_array(video_array):
     max_utterance = video_array.shape[1]
     result_array = np.empty((0, max_utterance, _NUM_CLASSES))
 
-    count = 0
     for v in video_array:
         visual_features = model_visual_features(v)
-        np.save("v_features_{}".format(count), visual_features)
+        # np.save("v_features_{}".format(count), visual_features)
         result_array = np.append(result_array, [visual_features], axis=0)
 
+    np.expand_dims()
     return result_array
 
 
 def get_video_features(path, sep='_', start=1, filenames=None):
-    return get_visual_features_from_array(get_videos_array(path, sep, start, filenames))
+    # shape: (video, utterances, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
+
+    videos = get_videos_array(path, sep, start, filenames)
+
+    print('video shape:', videos.shape)
+
+    count = 0
+
+    for video in videos:
+        for utterance in video:
+            # shape: (_FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
+
+            #including two more dimensions:
+            v = np.expand_dims(np.expand_dims(utterance, axis=0), axis=0)
+            visual_features = get_visual_features_from_array(v)
+
+            print("shape visual_features",visual_features.shape)
+
+            np.save('visual_features',visual_features)
+
+            count +=1
+            if(count > 3):
+                return
+
+    # return get_visual_features_from_array()
