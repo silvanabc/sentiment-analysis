@@ -108,8 +108,6 @@ def get_videos_array(path, sep='_', start =1, filenames=None):
 
 #return the video features using a CNN model
 def model_visual_features(rgb_array):
-    print("Starting modeling...")
-
     i3d_model = i3d.InceptionI3d(num_classes=_NUM_CLASSES, final_endpoint='Predictions')
 
     inp = tf.placeholder(tf.float32, [None, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3])
@@ -147,8 +145,7 @@ def get_video_features(path, sep='_', start=1, filenames=None):
 
     print("Video names: ", video_names)
 
-    # result_array = np.empty((0, max_utterance, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
-    result_array = np.empty((len(video_names), max_utterance, _NUM_CLASSES))
+    result_array = np.empty((0, max_utterance, _NUM_CLASSES))
 
     count = 0
 
@@ -169,19 +166,15 @@ def get_video_features(path, sep='_', start=1, filenames=None):
                 # shape: (1, 1, _NUM_CLASSES)
                 visual_features = get_visual_features_from_array(video)
 
-                print("shape visual_features", visual_features.shape)
-
                 utterance_result_array = np.append(utterance_result_array, visual_features[0], axis=0)
 
                 print("shape utterance_result_array", utterance_result_array.shape)
 
                 count += 1
-                if (count > 3):
+                if (count > 10):
                     break
 
             result_array = np.append(result_array, [utterance_result_array], axis=0)
             print("\nshape result_array", result_array.shape)
 
     return result_array
-
-    # return get_visual_features_from_array()
