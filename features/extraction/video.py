@@ -23,7 +23,7 @@ _FRAMES = 64
 
 #return an array of the frames values from a utterance
 def get_frames_array(video_path):
-    clip = VideoFileClip(video_path, target_resolution=(_IMAGE_SIZE[0],_IMAGE_SIZE[1]))
+    clip = VideoFileClip(video_path, target_resolution=(_IMAGE_SIZE[0],_IMAGE_SIZE[1]), verbose=False)
     frames = np.array([x for x in clip.iter_frames()])
     return pad_array(frames, _FRAMES)
 
@@ -143,11 +143,13 @@ def get_video_features(path, sep='_', start=1, filenames=None):
 
     video_names, max_utterance = get_video_info(path, sep)
 
+    print("{} videos".format(len(video_names)))
     print("Video names: ", video_names)
 
     result_array = np.empty((0, max_utterance, _NUM_CLASSES))
 
     count = 0
+    batch_size = 5
 
     for v in video_names:
         if (not filenames or v in filenames):
@@ -157,7 +159,10 @@ def get_video_features(path, sep='_', start=1, filenames=None):
 
             utterance_result_array = np.empty((0, _NUM_CLASSES))
 
-            for u in utterances:
+            # for u in utterances:
+            for i in range(0, utterances.shape[0], batch_size):
+                u = utterances[i:i+batch_size]
+
                 # shape: (_FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
 
                 # including two more dimensions:
@@ -168,7 +173,7 @@ def get_video_features(path, sep='_', start=1, filenames=None):
 
                 utterance_result_array = np.append(utterance_result_array, visual_features[0], axis=0)
 
-                # print("shape utterance_result_array", utterance_result_array.shape)
+                print("shape utterance_result_array", utterance_result_array.shape)
 
                 # count += 1
                 # if (count > max_utterance):
