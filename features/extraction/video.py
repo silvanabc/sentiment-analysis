@@ -137,33 +137,49 @@ def get_visual_features_from_array(video_array):
         # np.save("v_features_{}".format(count), visual_features)
         result_array = np.append(result_array, [visual_features], axis=0)
 
-    np.expand_dims()
     return result_array
 
 
 def get_video_features(path, sep='_', start=1, filenames=None):
     # shape: (video, utterances, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
 
-    videos = get_videos_array(path, sep, start, filenames)
+    video_names, max_utterance = get_video_info(path, sep)
 
-    print('video shape:', videos.shape)
+    print("Video names: ", video_names)
+
+    # result_array = np.empty((0, max_utterance, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
+    result_array = np.empty((len(video_names), max_utterance, _NUM_CLASSES))
 
     count = 0
 
-    for video in videos:
-        for utterance in video:
-            # shape: (_FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
+    for v in video_names:
+        if (not filenames or v in filenames):
 
-            #including two more dimensions:
-            v = np.expand_dims(np.expand_dims(utterance, axis=0), axis=0)
-            visual_features = get_visual_features_from_array(v)
+            #shape: (n, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
+            utterances = get_video_utterances_array(path, v, max_utterance, sep, start)
 
-            print("shape visual_features",visual_features.shape)
+            utterance_result_array = np.empty((max_utterance, _NUM_CLASSES))
 
-            np.save('visual_features',visual_features)
+            for u in utterances:
+                # shape: (_FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
 
-            count +=1
-            if(count > 3):
-                return
+                # including two more dimensions:
+                video = np.expand_dims(np.expand_dims(u, axis=0), axis=0)
+
+                # shape: (1, 1, _NUM_CLASSES)
+                visual_features = get_visual_features_from_array(video)
+
+                utterance_result_array = np.append(utterance_result_array, visual_features[0], axis=0)
+
+                print("shape utterance_result_array", utterance_result_array.shape)
+
+                count += 1
+                if (count > 3):
+                    return
+
+            result_array = np.append(result_array, [utterance_result_array], axis=0)
+            print("\nshape result_array", result_array.shape)
+
+    return result_array
 
     # return get_visual_features_from_array()
