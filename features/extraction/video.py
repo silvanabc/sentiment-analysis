@@ -158,7 +158,7 @@ def get_video_features(path, sep='_', start=1, filenames=None):
             #shape: (n, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
             utterances = get_video_utterances_array(path, v, max_utterance, sep, start)
 
-            utterance_result_array = np.empty((max_utterance, _NUM_CLASSES))
+            utterance_result_array = np.empty((0, _NUM_CLASSES))
 
             for u in utterances:
                 # shape: (_FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
@@ -169,13 +169,15 @@ def get_video_features(path, sep='_', start=1, filenames=None):
                 # shape: (1, 1, _NUM_CLASSES)
                 visual_features = get_visual_features_from_array(video)
 
+                print("shape visual_features", visual_features.shape)
+
                 utterance_result_array = np.append(utterance_result_array, visual_features[0], axis=0)
 
                 print("shape utterance_result_array", utterance_result_array.shape)
 
                 count += 1
                 if (count > 3):
-                    return
+                    break
 
             result_array = np.append(result_array, [utterance_result_array], axis=0)
             print("\nshape result_array", result_array.shape)
