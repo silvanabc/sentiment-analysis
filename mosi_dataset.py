@@ -41,11 +41,18 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
 
-    f = ['2iD-tVS8NPw', '8d-gEyoeBzc']
-    # extract.get_video_features(args.path, args.sep_segment, args.start_segment, standard_train_fold)
-    video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, f)
+    # f = ['2iD-tVS8NPw', '8d-gEyoeBzc']
+    # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, f)
+    #
+    # output_path = args.output_path + args.output_name
+    #
+    # print('\nVideo features saved in', output_path)
+    #
+    # np.save(output_path, video_features)
 
-    output_path = args.output_path + args.output_name
+    #-- Test --#
+    video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, standard_test_fold)
+    output_path = args.output_path + args.output_name + "_test"
 
     print('\nVideo features saved in', output_path)
 
