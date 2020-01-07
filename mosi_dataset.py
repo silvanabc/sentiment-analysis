@@ -43,17 +43,20 @@ if __name__ == "__main__":
 
     # f = ['2iD-tVS8NPw', '8d-gEyoeBzc']
     # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, f)
-    #
     # output_path = args.output_path + args.output_name
-    #
-    # print('\nVideo features saved in', output_path)
-    #
     # np.save(output_path, video_features)
+    # print('\nVideo features saved in', output_path)
+
 
     #-- Test --#
     video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, standard_test_fold)
     output_path = args.output_path + args.output_name + "_test"
-
+    np.save(output_path, video_features)
     print('\nVideo features saved in', output_path)
 
+    # -- Train --#
+    train = standard_train_fold + standard_valid_fold
+    video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, train)
+    output_path = args.output_path + args.output_name + "_train"
     np.save(output_path, video_features)
+    print('\nVideo features saved in', output_path)
