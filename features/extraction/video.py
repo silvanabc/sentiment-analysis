@@ -6,9 +6,11 @@
 
 from moviepy.editor import VideoFileClip
 import numpy as np
-import tensorflow as tf
 import os
 from collections import Counter
+import tensorflow as tf
+# print("Num GPUs Available:", len(tf.ConfigProto.experimental.list_physical_devices('GPU')))
+# gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1)
 
 ## Kinects-i3D ##
 import sys
@@ -115,11 +117,17 @@ def model_visual_features(rgb_array):
     predictions, end_points = i3d_model(inp, is_training=True, dropout_keep_prob=0.5)
 
     init_op = tf.global_variables_initializer()
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    config.gpu_options.per_process_gpu_memory_fraction = 0.9
+
+
+    # print(init_op)
 
     # sample_input = np.zeros((5, 64, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
     sample_input = rgb_array
 
-    with tf.Session() as sess:
+    with tf.Session(config=config) as sess:
         sess.run(init_op)
         out_predictions, out_logits = sess.run([predictions, end_points['Logits']], {inp: sample_input})
 
