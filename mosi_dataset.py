@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     list = []
     for video_id in f:
-        video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, standard_test_fold)
+        video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, [video_id])
 
         list.append(video_features)
 
