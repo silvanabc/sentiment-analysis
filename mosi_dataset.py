@@ -18,6 +18,11 @@ standard_valid_fold=['WKA5OygbEKI', 'c5xsKMxpXnc', 'atnd_PF-Lbs', 'bvLlb-M3UXU',
 standard_test_fold=['tmZoasNr4rU', 'zhpQhgha_KU', 'lXPQBPVc5Cw', 'iiK8YX8oH1E', 'tStelxIAHjw', 'nzpVDcQ0ywM', 'etzxEpPuc6I', 'cW1FSBF59ik', 'd6hH302o4v8', 'k5Y_838nuGo', 'pLTX3ipuDJI', 'jUzDDGyPkXU', 'f_pcplsH_V0', 'yvsjCA6Y5Fc', 'nbWiPyCm4g0', 'rnaNMUZpvvg', 'wMbj6ajWbic', 'cM3Yna7AavY', 'yDtzw_Y-7RU', 'vyB00TXsimI', 'dq3Nf_lMPnE', 'phBUpBr1hSo', 'd3_k5Xpfmik', 'v0zCBqDeKcE', 'tIrG4oNLFzE', 'fvVhgmXxadc', 'ob23OKe5a9Q', 'cXypl4FnoZo', 'vvZ4IcEtiZc', 'f9O3YtZ2VfI', 'c7UH_rxdZv4']
 
 
+def create_picke():
+    # format:
+    #(train_data, train_label, test_data, test_label, maxlen, train_length, test_length)
+    return
+
 def parse_arguments():
     argv = sys.argv[1:]
     parser = argparse.ArgumentParser()
@@ -41,7 +46,7 @@ def parse_arguments():
 if __name__ == "__main__":
     args = parse_arguments()
 
-    # f = ['2iD-tVS8NPw', '8d-gEyoeBzc']
+    f = ['2iD-tVS8NPw', '8d-gEyoeBzc']
     # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, f)
     # output_path = args.output_path + args.output_name
     # np.save(output_path, video_features)
@@ -49,14 +54,21 @@ if __name__ == "__main__":
 
 
     #-- Test --#
-    video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, standard_test_fold)
+
+    list = []
+    for video_id in f:
+        video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, standard_test_fold)
+
+        list.append(video_features)
+
     output_path = args.output_path + args.output_name + "_test"
-    np.save(output_path, video_features)
+    np.save(output_path, np.array(video_features))
+
     print('\nVideo features saved in', output_path)
 
-    # -- Train --#
-    train = standard_train_fold + standard_valid_fold
-    video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, train)
-    output_path = args.output_path + args.output_name + "_train"
-    np.save(output_path, video_features)
-    print('\nVideo features saved in', output_path)
+    # # -- Train --#
+    # train = standard_train_fold + standard_valid_fold
+    # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, train)
+    # output_path = args.output_path + args.output_name + "_train"
+    # np.save(output_path, video_features)
+    # print('\nVideo features saved in', output_path)
