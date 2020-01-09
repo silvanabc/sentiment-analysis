@@ -43,22 +43,11 @@ def parse_arguments():
     return args
 
 
-if __name__ == "__main__":
-    args = parse_arguments()
-
-    f = ['2iD-tVS8NPw', '8d-gEyoeBzc']
-    # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, f)
-    # output_path = args.output_path + args.output_name
-    # np.save(output_path, video_features)
-    # print('\nVideo features saved in', output_path)
-
-
-    #-- Test --#
-
+def extract_video_features(video_names, args):
     list = []
     count = 0
     start_loop_test_time = datetime.datetime.now()
-    for video_id in standard_test_fold:
+    for video_id in video_names:
         start_time = datetime.datetime.now()
         count += 1
         print(100 * '-')
@@ -70,15 +59,26 @@ if __name__ == "__main__":
         list.append(video_features)
 
         print("Computation Time: ", str(datetime.datetime.now() - start_time))
-
     print("Total Computation Time for Test Folder: ", str(datetime.datetime.now() - start_loop_test_time))
-
-    output_path = args.output_path + args.output_name + "_test"
-    np.save(output_path, np.array(video_features))
-
+    output_path = args.output_path + args.output_name
+    np.save(output_path, np.array(list))
     print('\nVideo features saved in', output_path)
 
+if __name__ == "__main__":
+    args = parse_arguments()
+
+    # f = ['2iD-tVS8NPw', '8d-gEyoeBzc']
+    # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, f)
+    # output_path = args.output_path + args.output_name
+    # np.save(output_path, video_features)
+    # print('\nVideo features saved in', output_path)
+
+
+    #-- Test --#
+    extract_video_features(standard_test_fold, args)
+
     # # -- Train --#
+    # extract_video_features(standard_valid_fold + standard_train_fold, args)
     # train = standard_train_fold + standard_valid_fold
     # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, train)
     # output_path = args.output_path + args.output_name + "_train"
