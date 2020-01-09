@@ -44,30 +44,15 @@ def parse_arguments():
 
 
 def extract_video_features(video_names, args):
-    list = []
-    count = 0
-    start_loop_test_time = datetime.datetime.now()
-    for video_id in video_names:
-        start_time = datetime.datetime.now()
-        count += 1
-        print(100 * '-')
-        print('Video', count)
-        print(100 * '-')
-
-        video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, [video_id])
-
-        list.append(video_features)
-
-        print("Computation Time: ", str(datetime.datetime.now() - start_time))
-    print("Total Computation Time for Test Folder: ", str(datetime.datetime.now() - start_loop_test_time))
+    video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, video_names)
     output_path = args.output_path + args.output_name
-    np.save(output_path, np.array(list))
+    np.save(output_path, video_features)
     print('\nVideo features saved in', output_path)
 
 if __name__ == "__main__":
     args = parse_arguments()
 
-    # f = ['2iD-tVS8NPw', '8d-gEyoeBzc']
+    f = ['2iD-tVS8NPw', '8d-gEyoeBzc', 'Qr1Ca94K55A']
     # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, f)
     # output_path = args.output_path + args.output_name
     # np.save(output_path, video_features)
@@ -75,7 +60,7 @@ if __name__ == "__main__":
 
 
     #-- Test --#
-    extract_video_features(standard_test_fold, args)
+    extract_video_features(f, args)
 
     # # -- Train --#
     # extract_video_features(standard_valid_fold + standard_train_fold, args)

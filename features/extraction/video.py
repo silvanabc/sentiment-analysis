@@ -9,8 +9,7 @@ import numpy as np
 import os
 from collections import Counter
 import tensorflow as tf
-# print("Num GPUs Available:", len(tf.ConfigProto.experimental.list_physical_devices('GPU')))
-# gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1)
+import datetime
 
 ## Kinects-i3D ##
 import sys
@@ -26,7 +25,7 @@ _FRAMES = 64
 #return an array of the frames values from a utterance
 def get_frames_array(video_path):
     clip = VideoFileClip(video_path, target_resolution=(_IMAGE_SIZE[0],_IMAGE_SIZE[1]), verbose=False)
-    frames = np.array([x for x in clip.iter_frames()])
+    frames = np.array([x for x in clip.iter_frames(fps=30)])
     return pad_array(frames, _FRAMES)
 
 
@@ -95,8 +94,6 @@ def get_video_utterances_array(videos_path, video_name,
 def get_videos_array(path, sep='_', start =1, filenames=None):
     video_names, max_utterance = get_video_info(path,sep)
 
-    print("Video names: ", video_names)
-
     result_array = np.empty((0, max_utterance, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
 
     for v in video_names:
@@ -119,10 +116,6 @@ def model_visual_features(rgb_array):
     init_op = tf.global_variables_initializer()
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
-    config.gpu_options.per_process_gpu_memory_fraction = 0.9
-
-
-    # print(init_op)
 
     # sample_input = np.zeros((5, 64, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
     sample_input = rgb_array
@@ -130,6 +123,8 @@ def model_visual_features(rgb_array):
     with tf.Session(config=config) as sess:
         sess.run(init_op)
         out_predictions, out_logits = sess.run([predictions, end_points['Logits']], {inp: sample_input})
+
+    tf.reset_default_graph()
 
     return out_logits
 
@@ -148,6 +143,7 @@ def get_visual_features_from_array(video_array):
 
 def get_video_features(path, sep='_', start=1, filenames=None):
     # shape: (video, utterances, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
+    time_start_method = datetime.datetime.now()
 
     video_names, max_utterance = get_video_info(path, sep)
 
@@ -162,6 +158,11 @@ def get_video_features(path, sep='_', start=1, filenames=None):
     for v in video_names:
         if (not filenames or v in filenames):
 
+            count +=1
+            print(100 * '-', 'Video', count, 100 * '-')
+
+            time_start_loop = datetime.datetime.now()
+
             #shape: (n, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
             utterances = get_video_utterances_array(path, v, max_utterance, sep, start)
 
@@ -172,9 +173,6 @@ def get_video_features(path, sep='_', start=1, filenames=None):
                 u = utterances[i:i+batch_size]
 
                 # shape: (_FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3)
-
-                # including two more dimensions:
-                # video = np.expand_dims(np.expand_dims(u, axis=0), axis=0)
                 video = np.expand_dims(u, axis=0)
 
                 # shape: (1, 1, _NUM_CLASSES)
@@ -184,11 +182,10 @@ def get_video_features(path, sep='_', start=1, filenames=None):
 
                 print("shape utterance_result_array", utterance_result_array.shape)
 
-                # count += 1
-                # if (count > max_utterance):
-                #     break
 
             result_array = np.append(result_array, [utterance_result_array], axis=0)
             print("\nshape result_array", result_array.shape)
+            print("Computation Time: ", str(datetime.datetime.now() - time_start_loop))
 
+    print("-- Total Computation Time:", str(datetime.datetime.now() - time_start_method), "--")
     return result_array
