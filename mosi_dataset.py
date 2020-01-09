@@ -56,10 +56,22 @@ if __name__ == "__main__":
     #-- Test --#
 
     list = []
-    for video_id in f:
+    count = 0
+    start_loop_test_time = datetime.datetime.now()
+    for video_id in standard_test_fold:
+        start_time = datetime.datetime.now()
+        count += 1
+        print(100 * '-')
+        print('Video', count)
+        print(100 * '-')
+
         video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, [video_id])
 
         list.append(video_features)
+
+        print("Computation Time: ", str(datetime.datetime.now() - start_time))
+
+    print("Total Computation Time for Test Folder: ", str(datetime.datetime.now() - start_loop_test_time))
 
     output_path = args.output_path + args.output_name + "_test"
     np.save(output_path, np.array(video_features))
