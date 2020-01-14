@@ -148,7 +148,6 @@ def get_video_features(path, sep='_', start=1, filenames=None):
     video_names, max_utterance = get_video_info(path, sep)
 
     print("{} videos".format(len(video_names)))
-    print("Video names: ", video_names)
 
     result_array = np.empty((0, max_utterance, _NUM_CLASSES))
 
