@@ -43,7 +43,8 @@ def pad_array(array, size):
         pad_left = np.zeros((pad_left_count,) + array.shape[1:])
         pad_right = np.zeros((pad_right_count,) + array.shape[1:])
 
-        result_array = np.concatenate((pad_left, array, pad_right))
+        #TODO: fix this method to pad only on the right
+        result_array = np.concatenate((array,pad_left, pad_right))
 
     else: #resize
         result_array = np.resize(array.mean(axis=0).astype(int),
@@ -96,7 +97,7 @@ def get_videos_array(path, sep='_', start =1, filenames=None):
 
     result_array = np.empty((0, max_utterance, _FRAMES, _IMAGE_SIZE[0], _IMAGE_SIZE[1], 3))
 
-    for v in video_names:
+    for v in sorted(video_names):
         if(not filenames or v in filenames):
             video_array = get_video_utterances_array(path,v,max_utterance,sep, start)
 
@@ -158,7 +159,7 @@ def get_video_features(path, sep='_', start=1, filenames=None):
         if (not filenames or v in filenames):
 
             count +=1
-            print(100 * '-', 'Video', count, 100 * '-')
+            print(50 * '-', 'Video', count, 50 * '-')
 
             time_start_loop = datetime.datetime.now()
 

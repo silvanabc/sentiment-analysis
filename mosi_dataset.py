@@ -30,7 +30,7 @@ def get_labels_and_length(filenames, videos_path, sep, max_utterance, df):
     labels = np.empty((0, max_utterance))
     utterance_length = []
 
-    for name in info_names:
+    for name in sorted(info_names):
         if (name in filenames):
             df_segment = df[df.video_id == name].sort_values(by=['segment'])
             scores = df_segment['score'].values
@@ -41,13 +41,16 @@ def get_labels_and_length(filenames, videos_path, sep, max_utterance, df):
     return labels, utterance_length
 
 
-def generate_pickle(csv_path, videos_path, sep='_', pickle_path='mosi_pickle.pkl'):
+def generate_pickle(csv_path, videos_path, sep='_',
+                    train_features_path=TRAIN_FEATURES_PATH,
+                    test_features_path=TEST_FEATURES_PATH,
+                    pickle_path='mosi_pickle.pkl'):
     # format:
     #(train_data, train_label, test_data, test_label, maxlen, train_length, test_length)
     df = pd.read_csv(csv_path, skiprows=0, names=['start', 'end', 'video_id', 'segment', 'score'])
 
-    train = np.load(TEST_FEATURES_PATH)
-    test = np.load(TRAIN_FEATURES_PATH)
+    train = np.load(train_features_path)
+    test = np.load(test_features_path)
 
     max_utterance = train.shape[1]
 
@@ -92,22 +95,26 @@ def extract_video_features(video_names, args):
     output_path = args.output_path + args.output_name
     np.save(output_path, video_features)
     print('\nVideo features saved in', output_path)
+    return output_path
 
 if __name__ == "__main__":
     args = parse_arguments()
 
-    # f = ['2iD-tVS8NPw', '8d-gEyoeBzc', 'Qr1Ca94K55A']
-    # video_features = extract.get_video_features(args.path, args.sep_segment, args.start_segment, f)
-    # output_path = args.output_path + args.output_name
-    # np.save(output_path, video_features)
-    # print('\nVideo features saved in', output_path)
+    f = ['2iD-tVS8NPw', '8d-gEyoeBzc', 'Qr1Ca94K55A']
 
+    args.output_name = 'test_'
+    s = extract_video_features(standard_test_fold, args)
+    print(s)
 
-    #-- Test --#
-    # extract_video_features(standard_test_fold, args)
-
-    # -- Train --#
-    # extract_video_features(standard_valid_fold + standard_train_fold, args)
-
-    #-- Create pickle --#
-    generate_pickle(args.label_csv_path, args.path, args.sep_segment)
+    #
+    # #-- Test --#
+    # args.output_name = 'test_'
+    # test_features_path = extract_video_features(standard_test_fold, args)
+    #
+    # # -- Train --#
+    # args.output_name = 'train_'
+    # train_features_path = extract_video_features(standard_valid_fold + standard_train_fold, args)
+    #
+    # #-- Create pickle --#
+    # pklname = 'mosi_video'
+    # generate_pickle(args.label_csv_path, args.path, args.sep_segment, train_features_path, test_features_path)
