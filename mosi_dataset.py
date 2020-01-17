@@ -7,7 +7,6 @@
 import sys
 import argparse
 import features.extraction as extract
-import video_features_extraction as vf
 import datetime
 import numpy as np
 import pandas as pd
@@ -25,7 +24,7 @@ TRAIN_FEATURES_PATH = './output/mosi_test.npy'
 
 
 def get_labels_and_length(filenames, videos_path, sep, max_utterance, df):
-    info_names, _ = vf.get_video_info(videos_path, sep)
+    info_names, _ = extract.get_video_info(videos_path, sep)
 
     labels = np.empty((0, max_utterance))
     utterance_length = []
@@ -34,7 +33,7 @@ def get_labels_and_length(filenames, videos_path, sep, max_utterance, df):
         if (name in filenames):
             df_segment = df[df.video_id == name].sort_values(by=['segment'])
             scores = df_segment['score'].values
-            labels = np.append(labels, [vf.pad_array(scores, max_utterance)], axis=0)
+            labels = np.append(labels, [extract.pad_array(scores, max_utterance)], axis=0)
 
             utterance_length.append(df_segment.shape[0])
 
@@ -102,9 +101,9 @@ if __name__ == "__main__":
 
     f = ['2iD-tVS8NPw', '8d-gEyoeBzc', 'Qr1Ca94K55A']
 
-    args.output_name = 'test_'
-    s = extract_video_features(standard_test_fold, args)
-    print(s)
+    # args.output_name = 'test_'
+    # s = extract_video_features(standard_test_fold, args)
+    # print(s)
 
     #
     # #-- Test --#
@@ -117,4 +116,6 @@ if __name__ == "__main__":
     #
     # #-- Create pickle --#
     # pklname = 'mosi_video'
-    # generate_pickle(args.label_csv_path, args.path, args.sep_segment, train_features_path, test_features_path)
+    train_features_path = './output/train_.npy'
+    test_features_path = './output/test_npy'
+    generate_pickle(args.label_csv_path, args.path, args.sep_segment, train_features_path, test_features_path)
