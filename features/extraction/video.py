@@ -62,7 +62,7 @@ def get_video_info(path, sep):
     names = list(set(files))
     max_segment = Counter(files).most_common(1)[0][1]
 
-    return names, max_segment
+    return sorted(names), max_segment
 
 # get a numpy array of the all the video utterances
 def get_video_utterances_array(videos_path, video_name,
@@ -155,7 +155,7 @@ def get_video_features(path, sep='_', start=1, filenames=None):
     count = 0
     batch_size = 5
 
-    for v in video_names:
+    for v in sorted(video_names):
         if (not filenames or v in filenames):
 
             count +=1
