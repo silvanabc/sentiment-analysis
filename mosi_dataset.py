@@ -117,5 +117,5 @@ if __name__ == "__main__":
     # #-- Create pickle --#
     # pklname = 'mosi_video'
     train_features_path = './output/train_.npy'
-    test_features_path = './output/test_npy'
+    test_features_path = './output/test_.npy'
     generate_pickle(args.label_csv_path, args.path, args.sep_segment, train_features_path, test_features_path)
